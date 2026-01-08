@@ -5,7 +5,7 @@ services:
   web:
     build: .
     command: >
-      bash -c "./manage.py collectstatic --noinput && ./manage.py makemigrations && ./manage.py migrate && gunicorn -b 0.0.0.0:8000 instagram_project.wsgi:application"
+      bash -c "./manage.py collectstatic --noinput && ./manage.py makemigrations && ./manage.py migrate && daphne -b 0.0.0.0:8000 instagram_project.asgi:application"
     volumes:
       - .:/app
       - static_volume:/app/static
@@ -14,6 +14,10 @@ services:
       - "8000:8000"
     depends_on:
       - db
+
+  redis:
+    image: redis:latest
+    restart: always
 
   db:
     image: postgres:17
